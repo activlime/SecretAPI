@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
@@ -25,8 +25,7 @@ def accounts(request):
         form = UserForm(request.POST)
         if form.is_valid():
             new_user = User.objects.create_user(**form.cleaned_data)
-            login(new_user)
-            return HttpResponseRedirect('adduser.html')
+            return HttpResponse("success")
         else:
             return render(request, 'adduser.html', {'form': form})
     else:
