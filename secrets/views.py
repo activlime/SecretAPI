@@ -16,21 +16,20 @@ from . import strings
 from django.template.context_processors import csrf
 
 # Create your views here.
-@csrf_protect
 @token_required
+@csrf_protect
 def secrets(request):
     if request.method == strings.POST:
         user_id = request.POST['user']
-        if (utility.username_present(user_id)):
-            JsonError("incorrect user_id")
         description = request.POST['description']
-        s = Secret(description=description, author_id=user_id)
-        s.save()
-        return JsonResponse("Your secrets are safe with us")
+        user = get_object_or_404(User, pk=user_id)
+        user.secret_set.create(description=description)
+        return JsonResponse("succesfully added")
     elif request.method == strings.GET:
-        queryset = Secret.objects.all()
-        return HttpResponse(serializers.serialize(strings.JSON, queryset=queryset))
-
+        user_id = request.GET['user']
+        user = get_object_or_404(User, pk=user_id)
+        queryset = user.secret_set
+        return HttpResponse(serializers.serialize(strings.json, queryset=queryset))
     else:
         return JsonResponse("only can have post and get requests")
 

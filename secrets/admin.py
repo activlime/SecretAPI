@@ -5,9 +5,6 @@ from secrets.models import Secret
 
 
 class SecretAdmin(admin.ModelAdmin):
-    list_display = ['description', 'author_id', 'pub_date']
-    list_filter = ['author_id']
+    list_display = ['description', 'pub_date']
 
 admin.site.register(Secret, SecretAdmin)
-
-
