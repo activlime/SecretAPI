@@ -1,3 +1,4 @@
+import json
 from datetime import timezone, datetime
 
 from django.contrib.auth import login
@@ -8,7 +9,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from tokenapi.decorators import token_required
 from tokenapi.http import JsonResponse, JsonError
-from .utility import utility
+from . import utility
 from secrets.forms import UserForm
 from .models import Secret
 from django.views.decorators.http import require_http_methods
@@ -23,19 +24,44 @@ def secrets(request):
         description = request.POST['description']
         user = get_object_or_404(User, pk=user_id)
         user.secret_set.create(description=description)
-        return JsonResponse("Your secrets are safe with us")
+        return JsonResponse({})
+
     elif request.method == strings.GET:
         user_id = request.GET['user']
         user = get_object_or_404(User, pk=user_id)
-        queryset = Secret.objects.filter(user__id=user_id)
-        return HttpResponse(serializers.serialize(strings.JSON, queryset=queryset))
-    else:
-        return JsonResponse("only can have post and get requests")
+        secrets = Secret.objects.filter(user__id=user.id)
 
-@token_required
+        listofsecrets = []
+        dictofsecrets = {}
+
+        for secret in secrets:
+           listofsecrets.append(utility.Secret(secret.id, secret.description, str(secret.pub_date)).__dict__)
+
+        dictofsecrets["secrets"] = listofsecrets
+
+        return JsonResponse(dictofsecrets)
+    else:
+        return JsonError("only can have post and get requests")
+
+@csrf_exempt
 def detail(request, secret_id):
-    queryset = get_object_or_404(Secret, pk=secret_id)
-    return HttpResponse(serializers.serialize(strings.JSON, queryset=queryset))
+    if request.method == strings.POST:
+        user_id = request.POST['user']
+    elif request.method == strings.GET:
+        user_id = request.GET['user']
+    else:
+        return HttpResponse("hello")
+
+    user = get_object_or_404(User, pk=user_id)
+    try:
+        selected_choice = user.secret_set.get(pk=secret_id)
+    except (KeyError, Secret.DoesNotExist):
+        # Redisplay the question voting form.
+        return JsonError("Secret id " + secret_id + " does not exist")
+
+    secret = utility.Secret(selected_choice.id, selected_choice.description, str(selected_choice.pub_date)).__dict__
+
+    return JsonResponse(secret)
 
 def accounts(request):
     if request.method == "POST":
