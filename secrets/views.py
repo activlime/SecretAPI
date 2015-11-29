@@ -19,17 +19,17 @@ from django.template.context_processors import csrf
 
 # Create your views here.
 @csrf_exempt
+@token_required
 def secrets(request):
+    user_id = request.GET['user']
+    user = get_object_or_404(User, pk=user_id)
+
     if request.method == strings.POST:
-        user_id = request.POST['user']
         description = request.POST['description']
-        user = get_object_or_404(User, pk=user_id)
         user.secret_set.create(description=description)
         return JsonResponse({})
 
     elif request.method == strings.GET:
-        user_id = request.GET['user']
-        user = get_object_or_404(User, pk=user_id)
         secrets = Secret.objects.filter(user__id=user.id)
 
         listofsecrets = []
@@ -45,34 +45,14 @@ def secrets(request):
         return JsonError("only can have post and get requests")
 
 @csrf_exempt
+@token_required
 def detail(request, secret_id):
+    user_id = request.GET['user']
+    user = get_object_or_404(User, pk=user_id)
+
     if request.method == strings.POST:
-        user_id = request.POST['user']
         description = request.POST['description']
 
-        user = get_object_or_404(User, pk=user_id)
-        user.secret_set.create(description=description)
-
-        return JsonResponse({})
-
-    elif request.method == strings.GET:
-        user_id = request.GET['user']
-
-        user = get_object_or_404(User, pk=user_id)
-        try:
-            selected_choice = user.secret_set.get(pk=secret_id)
-        except (KeyError, ObjectDoesNotExist):
-            return JsonError("Secret id " + secret_id + " does not exist")
-
-        secret = utility.Secret(selected_choice.id, selected_choice.description, str(selected_choice.pub_date)).__dict__
-
-        return JsonResponse(secret)
-
-    elif request.method == strings.PUT:
-        user_id = request.GET['user']
-        description = request.GET['description']
-
-        user = get_object_or_404(User, pk=user_id)
         try:
             selected_secret = user.secret_set.get(pk=secret_id)
         except (KeyError, ObjectDoesNotExist):
@@ -83,10 +63,17 @@ def detail(request, secret_id):
 
         return JsonResponse({})
 
-    elif request.method == strings.DELETE:
-        user_id = request.GET['user']
+    elif request.method == strings.GET:
+        try:
+            selected_choice = user.secret_set.get(pk=secret_id)
+        except (KeyError, ObjectDoesNotExist):
+            return JsonError("Secret id " + secret_id + " does not exist")
 
-        user = get_object_or_404(User, pk=user_id)
+        secret = utility.Secret(selected_choice.id, selected_choice.description, str(selected_choice.pub_date)).__dict__
+
+        return JsonResponse(secret)
+
+    elif request.method == strings.DELETE:
         try:
             selected_secret = user.secret_set.get(pk=secret_id)
         except (KeyError, ObjectDoesNotExist):
@@ -105,14 +92,21 @@ def accounts(request):
 
         if form.is_valid():
             new_user = User.objects.create_user(**form.cleaned_data)
-
-            return JsonResponse(new_user.id)
+            dict = userdict(new_user.id)
+            return JsonResponse(dict)
         else:
 
             return render(request, 'adduser.html', {'form': form})
     else:
         form = UserForm()
         return render(request, 'adduser.html', {'form': form})
+
+def userdict(new_user_id):
+    dict = {}
+    dict[strings.USER] = new_user_id
+    return dict
+
+
 
 
 

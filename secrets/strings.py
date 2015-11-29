@@ -11,4 +11,5 @@ DESCRIPTION = ""
 USERNAME = "username"
 PASSWORD = "password"
 TOKEN = "token"
+USER = "user"
 
