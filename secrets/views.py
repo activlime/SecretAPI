@@ -4,6 +4,7 @@ from datetime import timezone, datetime
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
@@ -47,21 +48,56 @@ def secrets(request):
 def detail(request, secret_id):
     if request.method == strings.POST:
         user_id = request.POST['user']
+        description = request.POST['description']
+
+        user = get_object_or_404(User, pk=user_id)
+        user.secret_set.create(description=description)
+
+        return JsonResponse({})
+
     elif request.method == strings.GET:
         user_id = request.GET['user']
+
+        user = get_object_or_404(User, pk=user_id)
+        try:
+            selected_choice = user.secret_set.get(pk=secret_id)
+        except (KeyError, ObjectDoesNotExist):
+            return JsonError("Secret id " + secret_id + " does not exist")
+
+        secret = utility.Secret(selected_choice.id, selected_choice.description, str(selected_choice.pub_date)).__dict__
+
+        return JsonResponse(secret)
+
+    elif request.method == strings.PUT:
+        user_id = request.GET['user']
+        description = request.GET['description']
+
+        user = get_object_or_404(User, pk=user_id)
+        try:
+            selected_secret = user.secret_set.get(pk=secret_id)
+        except (KeyError, ObjectDoesNotExist):
+            return JsonError("Secret id " + secret_id + " does not exist")
+
+        selected_secret.description = description
+        selected_secret.save()
+
+        return JsonResponse({})
+
+    elif request.method == strings.DELETE:
+        user_id = request.GET['user']
+
+        user = get_object_or_404(User, pk=user_id)
+        try:
+            selected_secret = user.secret_set.get(pk=secret_id)
+        except (KeyError, ObjectDoesNotExist):
+            return JsonError("Secret id " + secret_id + " does not exist")
+
+        selected_secret.delete()
+        return JsonResponse({})
+
     else:
-        return HttpResponse("hello")
+        return JsonError("Only can post, put, get, delete")
 
-    user = get_object_or_404(User, pk=user_id)
-    try:
-        selected_choice = user.secret_set.get(pk=secret_id)
-    except (KeyError, Secret.DoesNotExist):
-        # Redisplay the question voting form.
-        return JsonError("Secret id " + secret_id + " does not exist")
-
-    secret = utility.Secret(selected_choice.id, selected_choice.description, str(selected_choice.pub_date)).__dict__
-
-    return JsonResponse(secret)
 
 def accounts(request):
     if request.method == "POST":
@@ -72,6 +108,7 @@ def accounts(request):
 
             return JsonResponse(new_user.id)
         else:
+
             return render(request, 'adduser.html', {'form': form})
     else:
         form = UserForm()

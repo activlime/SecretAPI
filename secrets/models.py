@@ -8,6 +8,3 @@ class Secret(models.Model):
     description = models.CharField(max_length=200)
     user = ForeignKey(User)
     pub_date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return "secret" + self._get_pk_val

@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.core import serializers
 from django.http import HttpResponse
 
+from tokenapi.http import JsonResponse, JsonError
+
 from secrets import strings
 
 
@@ -42,6 +44,4 @@ class Secret:
 
     def __str__(self):
         return "secret" + self.id
-
-
 

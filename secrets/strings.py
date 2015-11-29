@@ -2,6 +2,7 @@ JSON = "json"
 GET = "GET"
 POST = "POST"
 PUT = "PUT"
+DELETE = "DELETE"
 
 #model Secret fields
 DESCRIPTION = ""
@@ -10,3 +11,4 @@ DESCRIPTION = ""
 USERNAME = "username"
 PASSWORD = "password"
 TOKEN = "token"
+
