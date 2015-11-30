@@ -24,7 +24,8 @@ POST /secrets/accounts/
 ```
 POST /secrets/token/new.json
 ```
-*params = {"username" : [username], "password" : [password]}
+* params = {"username" : [username], "password" : [password]}
+* example response: ```{"success": true, "token": "2uy-420a8efff7f882afc20d", "user": 1}```
 
 #### get all secrets created by user
 ```
