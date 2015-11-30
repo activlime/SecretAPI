@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'secrets',
     'tokenapi',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -50,6 +51,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'secrets.middlewares.ExceptionMiddleware',
+    'secrets.middlewares.SSLMiddleware',
 )
 
 ROOT_URLCONF = 'SecretAPI.urls'

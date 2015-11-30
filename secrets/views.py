@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from rest_framework.decorators import api_view
 from tokenapi.decorators import token_required
 from tokenapi.http import JsonResponse, JsonError
 from . import utility
@@ -45,17 +46,23 @@ def secrets(request):
         return JsonError("only can have post and get requests")
 
 @csrf_exempt
-@token_required
 def detail(request, secret_id):
-    user_id = request.GET['user']
-    user = get_object_or_404(User, pk=user_id)
+    try:
+        user_id = request.GET['user']
+    except:
+        JsonError("key error")
+
+    try:
+        user = get_object_or_404(User, pk=user_id)
+    except ObjectDoesNotExist:
+        JsonError("User " + user_id + "does not exist")
 
     if request.method == strings.POST:
         description = request.POST['description']
 
         try:
             selected_secret = user.secret_set.get(pk=secret_id)
-        except (KeyError, ObjectDoesNotExist):
+        except (ObjectDoesNotExist):
             return JsonError("Secret id " + secret_id + " does not exist")
 
         selected_secret.description = description
@@ -66,7 +73,7 @@ def detail(request, secret_id):
     elif request.method == strings.GET:
         try:
             selected_choice = user.secret_set.get(pk=secret_id)
-        except (KeyError, ObjectDoesNotExist):
+        except (ObjectDoesNotExist):
             return JsonError("Secret id " + secret_id + " does not exist")
 
         secret = utility.Secret(selected_choice.id, selected_choice.description, str(selected_choice.pub_date)).__dict__
@@ -76,7 +83,7 @@ def detail(request, secret_id):
     elif request.method == strings.DELETE:
         try:
             selected_secret = user.secret_set.get(pk=secret_id)
-        except (KeyError, ObjectDoesNotExist):
+        except (ObjectDoesNotExist):
             return JsonError("Secret id " + secret_id + " does not exist")
 
         selected_secret.delete()
