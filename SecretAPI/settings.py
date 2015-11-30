@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'secrets',
     'tokenapi',
-    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (

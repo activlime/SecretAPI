@@ -8,7 +8,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from rest_framework.decorators import api_view
 from tokenapi.decorators import token_required
 from tokenapi.http import JsonResponse, JsonError
 from . import utility
