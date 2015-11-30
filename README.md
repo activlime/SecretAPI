@@ -18,6 +18,7 @@ NOTE**All responses are in ```json```
 ```
 POST /secrets/accounts/
 ```
+* create user in form
 
 #### get token
 ```
