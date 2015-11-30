@@ -46,6 +46,7 @@ def secrets(request):
         return JsonError("only can have post and get requests")
 
 @csrf_exempt
+@token_required
 def detail(request, secret_id):
     try:
         user_id = request.GET['user']
