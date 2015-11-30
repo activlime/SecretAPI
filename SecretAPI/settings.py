@@ -52,7 +52,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'secrets.middlewares.ExceptionMiddleware',
-    'secrets.middlewares.SSLMiddleware',
 )
 
 ROOT_URLCONF = 'SecretAPI.urls'

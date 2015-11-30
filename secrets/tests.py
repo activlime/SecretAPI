@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test import Client
@@ -73,6 +75,8 @@ class SecretTestCase(TestCase):
         self.assertTrue(self.user.secret_set.filter(description=description2).exists())
 
 # Create your tests here.
+# must delete middleware redirecting to https
+# this is for the production environment
 class ClientTestCase(TestCase):
     def setUp(self):
         #test client
@@ -82,13 +86,12 @@ class ClientTestCase(TestCase):
         self.PASSWORD = "password"
         self.USER = "user"
         self.SUCCESS = "success"
+        self.DESCRIPTION = "description"
 
         self.username = "admin"
         self.password = "password"
         self.email = "activelime@yahoo.com"
 
-        self.posturl = '/post/'
-        self.geturl = '/get/'
         self.secretsurl = '/secrets/'
         self.newtokenurl = '/secrets/token/new.json/'
         self.tokenurl = '/secrets/token/'
@@ -105,20 +108,28 @@ class ClientTestCase(TestCase):
         self.assertEqual(self.user.secret_set.count(), 0)
 
         #url for authentication
-        self.authenticateurl = "?user=" + str(self.user.id) + "&token="
+        self.authenticateurl = "?user=" + str(self.user.id) + "token="
 
-    def get_token(self):
+    def test_get_token(self):
         dict = {}
         dict[self.USERNAME] = self.username
         dict[self.PASSWORD] = self.password
+        print(dict)
         response = self.c.post(self.newtokenurl, dict)
-        self.assertTrue(response.content[self.SUCCESS])
-
+        str_response = response.content.decode('utf-8')
+        d = json.loads(str_response)
+        print(d)
+        self.assertTrue(d[self.SUCCESS])
+        self.assertEqual(response.content[self.USER], 5)
 
     def test_post_secret(self):
+        dict = {}
         description = "hellomynameisandrew"
-        self.dict['description'] = description
-        #response = self.c.post(self.post + , description)
+        dict[self.DESCRIPTION] = description
+        url = self.secretsurl + self.authenticateurl
+        response = self.c.get(url)
+        str_response = response.content.decode('utf-8')
+        d = json.loads(str_response)
 
     def authenticateuserurl(self, user_id):
         return "?user=" + user_id + "&token="

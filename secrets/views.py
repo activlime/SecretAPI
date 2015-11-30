@@ -20,7 +20,6 @@ from django.template.context_processors import csrf
 
 # Create your views here.
 @csrf_exempt
-@token_required
 def secrets(request):
     user_id = request.GET['user']
     user = get_object_or_404(User, pk=user_id)
