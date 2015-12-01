@@ -23,7 +23,7 @@ NOTE**All responses are in ```json```
 ## Installation
 
 1. use ```python3.5```
-2. install ```django```
+2. install ```django1.8.7```
 3. install ```postgresql```
 4. install ```django-tokenapi```
 5. create super user for postgresql
