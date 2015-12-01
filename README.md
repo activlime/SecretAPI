@@ -1,14 +1,29 @@
 # SecretAPI
 
-API where you keep your sects
+* API where you keep your sects using django
+* For accounts, you must go through a browser
+* I can validate the data quickly, it is user friendly, and common
+* uses user_id and token authentication to verify if valid user
+* I use that id to grab secrets that belong to the user
+
 
 NOTE**All responses are in ```json```
 
+## Next steps
+1. More tests with requests to make sure no breaks
+2. change framework to django rest framework because it is a lot simpler and cleaner; didn't use because not much documention
+3. create more error checks for user errors
+
 ## Installation
 
-1. install ```django```
-2. install ```postgresql```
-3. install ```django-tokenapi```
+1. use ```python3.5```
+2. install ```django```
+3. install ```postgresql```
+4. install ```django-tokenapi```
+5. create super user for postgresql
+6. in deployment environment, add SSLMiddleware in secrets.middlewares in settings.py
+7. not included  for testing purposes
+8. redirects through https
 
 ## Usage
 * all post, get, delete requests require user and token verification
