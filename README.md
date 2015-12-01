@@ -2,9 +2,10 @@
 
 * API where you keep your sects using django
 * For accounts, you must go through a browser
-* I can validate the data quickly, it is user friendly, and common
-* uses user_id and token authentication to verify if valid user
+* I chose html because I can validate the data quickly, it is user friendly, and common
+* valid users are confirmed using user_id and token authentication to verify if valid user
 * I use that id to grab secrets that belong to the user
+* I chose to use django because it handles a lot of the database attributes for me
 
 
 NOTE**All responses are in ```json```
