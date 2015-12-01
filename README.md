@@ -27,6 +27,7 @@ NOTE**All responses are in ```json```
 3. install ```postgresql```
 4. install ```django-tokenapi```
 5. create super user for postgresql
+6. create db
 6. in deployment environment, add SSLMiddleware in secrets.middlewares in settings.py
 7. not included  for testing purposes
 8. redirects through https
