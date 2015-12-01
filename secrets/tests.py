@@ -87,14 +87,15 @@ class ClientTestCase(TestCase):
         self.USER = "user"
         self.SUCCESS = "success"
         self.DESCRIPTION = "description"
+        self.TOKEN = "token"
 
         self.username = "admin"
         self.password = "password"
         self.email = "activelime@yahoo.com"
 
         self.secretsurl = '/secrets/'
-        self.newtokenurl = '/secrets/token/new.json/'
-        self.tokenurl = '/secrets/token/'
+        self.newtokenurl = '/secrets/token/new.json'
+        self.tokenurl = '/secrets/token'
         self.token = None
         self.dict = {}
 
@@ -107,32 +108,46 @@ class ClientTestCase(TestCase):
         #check initial is zero
         self.assertEqual(self.user.secret_set.count(), 0)
 
-        #url for authentication
-        self.authenticateurl = "?user=" + str(self.user.id) + "token="
-
     def test_get_token(self):
         dict = {}
         dict[self.USERNAME] = self.username
         dict[self.PASSWORD] = self.password
         print(dict)
         response = self.c.post(self.newtokenurl, dict)
+        print(response)
         str_response = response.content.decode('utf-8')
+        print(str_response)
         d = json.loads(str_response)
         print(d)
         self.assertTrue(d[self.SUCCESS])
-        self.assertEqual(response.content[self.USER], 5)
+        self.assertEqual(d[self.USER], 1)
 
     def test_post_secret(self):
+        user, token = self.getToken()
+
         dict = {}
         description = "hellomynameisandrew"
         dict[self.DESCRIPTION] = description
-        url = self.secretsurl + self.authenticateurl
-        response = self.c.get(url)
+        url = self.secretsurl + self.authenticateuserurl(user, token)
+        print(url)
+        response = self.c.post(url, dict)
+        str_response = response.content.decode('utf-8')
+        print(str_response)
+        d = json.loads(str_response)
+        self.assertTrue(d[self.SUCCESS])
+
+    def authenticateuserurl(self, user_id, token):
+        return "?user=" + str(user_id) + "&token=" + token
+
+    def getToken(self):
+        dict = {}
+        dict[self.USERNAME] = self.username
+        dict[self.PASSWORD] = self.password
+        response = self.c.post(self.newtokenurl, dict)
         str_response = response.content.decode('utf-8')
         d = json.loads(str_response)
+        return d[self.USER], d[self.TOKEN]
 
-    def authenticateuserurl(self, user_id):
-        return "?user=" + user_id + "&token="
 
 
 

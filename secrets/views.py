@@ -15,10 +15,12 @@ from secrets.forms import UserForm
 from .models import Secret
 from django.views.decorators.http import require_http_methods
 from . import strings
+from jsonview.decorators import json_view
 from django.template.context_processors import csrf
 
 # Create your views here.
 @csrf_exempt
+@token_required
 def secrets(request):
     user_id = request.GET['user']
     user = get_object_or_404(User, pk=user_id)
