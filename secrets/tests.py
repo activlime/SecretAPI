@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test import Client
 
+from . import strings
+
 # Create your tests here.
 class SecretTestCase(TestCase):
     def setUp(self):
@@ -112,15 +114,11 @@ class ClientTestCase(TestCase):
         dict = {}
         dict[self.USERNAME] = self.username
         dict[self.PASSWORD] = self.password
-        print(dict)
         response = self.c.post(self.newtokenurl, dict)
-        print(response)
         str_response = response.content.decode('utf-8')
-        print(str_response)
         d = json.loads(str_response)
-        print(d)
         self.assertTrue(d[self.SUCCESS])
-        self.assertEqual(d[self.USER], 1)
+        self.assertEqual(d[self.USER], self.user.id)
 
     def test_post_secret(self):
         user, token = self.getToken()
@@ -129,12 +127,27 @@ class ClientTestCase(TestCase):
         description = "hellomynameisandrew"
         dict[self.DESCRIPTION] = description
         url = self.secretsurl + self.authenticateuserurl(user, token)
-        print(url)
         response = self.c.post(url, dict)
+        str_response = response.content.decode('utf-8')
+        d = json.loads(str_response)
+        self.assertTrue(d[self.SUCCESS])
+
+    def test_get_secret(self):
+        user, token = self.getToken()
+
+        secret_id, description = self.postSecret()
+        print(str(secret_id))
+        print(description)
+        url = self.secretsurl + str(secret_id) + self.authenticateuserurl(user, token)
+        response = self.c.get(url)
+        print(response)
+        print(response.content)
         str_response = response.content.decode('utf-8')
         print(str_response)
         d = json.loads(str_response)
         self.assertTrue(d[self.SUCCESS])
+        self.assertEqual(d[self.DESCRIPTION], description)
+        self.assertEqual(secret_id, d[strings.ID])
 
     def authenticateuserurl(self, user_id, token):
         return "?user=" + str(user_id) + "&token=" + token
@@ -147,6 +160,18 @@ class ClientTestCase(TestCase):
         str_response = response.content.decode('utf-8')
         d = json.loads(str_response)
         return d[self.USER], d[self.TOKEN]
+
+    def postSecret(self):
+        user, token = self.getToken()
+        dict = {}
+        description = "hellomynameisandrew"
+        dict[self.DESCRIPTION] = description
+        url = self.secretsurl + self.authenticateuserurl(user, token)
+        response = self.c.post(url, dict)
+        str_response = response.content.decode('utf-8')
+        d = json.loads(str_response)
+        return d[strings.ID], description
+
 
 
 

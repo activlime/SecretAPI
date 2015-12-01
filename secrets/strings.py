@@ -3,6 +3,7 @@ GET = "GET"
 POST = "POST"
 PUT = "PUT"
 DELETE = "DELETE"
+ID = "id"
 
 #model Secret fields
 DESCRIPTION = ""

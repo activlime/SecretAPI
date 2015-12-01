@@ -1,22 +1,13 @@
-import json
-from datetime import timezone, datetime
-
-from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 from tokenapi.decorators import token_required
 from tokenapi.http import JsonResponse, JsonError
 from . import utility
 from secrets.forms import UserForm
 from .models import Secret
-from django.views.decorators.http import require_http_methods
 from . import strings
-from jsonview.decorators import json_view
-from django.template.context_processors import csrf
 
 # Create your views here.
 @csrf_exempt
@@ -27,8 +18,10 @@ def secrets(request):
 
     if request.method == strings.POST:
         description = request.POST['description']
-        user.secret_set.create(description=description)
-        return JsonResponse({})
+        secret = user.secret_set.create(description=description)
+        dict = {}
+        dict[strings.ID] = secret.id
+        return JsonResponse(dict)
 
     elif request.method == strings.GET:
         secrets = Secret.objects.filter(user__id=user.id)
