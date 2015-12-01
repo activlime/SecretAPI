@@ -33,6 +33,7 @@ NOTE**All responses are in ```json```
 
 ## Usage
 * all post, get, delete requests require user and token verification
+* to start server ```python manage.py runserver```
 
 
 #### html to create account
