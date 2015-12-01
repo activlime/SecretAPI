@@ -22,16 +22,20 @@ NOTE**All responses are in ```json```
 4. postman request to access or delete not allowed secret
 
 ## Installation
-
-1. use ```python3.5```
-2. install ```django1.8.7```
-3. install ```postgresql```
-4. install ```django-tokenapi```
-5. create super user for postgresql
-6. create db
-6. in deployment environment, add SSLMiddleware in secrets.middlewares in settings.py
-7. not included  for testing purposes
-8. redirects through https
+1. ```sudo apt-get install python-pip```
+2. ```sudo pip install virtualenv```
+2. ```sudo apt-get install python3-dev libpq-dev```
+3. ```mkdir django```
+4. ```cd django```
+5. ```virtual env -p [python 3 path] venv```
+6. ```source venv/bin/activate```
+7. ```pip install django```
+8. ```pip install psycopg2```
+9. ```git clone [repo]```
+10. ```sudo apt-get install postgresql```
+11. ```python manage.py syncdb```
+12. optional: deployment environment add secrests.middlewares.SSLMiddleware in settings.py
+12. ```python manage.py runserver```
 
 ## Usage
 * all post, get, delete requests require user and token verification
