@@ -14,6 +14,12 @@ NOTE**All responses are in ```json```
 2. change framework to django rest framework because it is a lot simpler and cleaner; didn't use because not much documention
 3. create more error checks for user errors
 
+## tests
+1. unit tests included
+2. postman inputs off all requests
+3. postman wrong inputs all requests
+4. postman request to access or delete not allowed secret
+
 ## Installation
 
 1. use ```python3.5```
