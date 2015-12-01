@@ -64,18 +64,18 @@ POST /secrets/?user=[user_id]&token=[token]
 
 #### get secret through secret_id
 ```
-GET /secrets/[secret_id]?user=[user_id]&token=[token]
+GET /secrets/[secret_id]/?user=[user_id]&token=[token]
 ```
 
 #### update secret through secret_id
 ```
-POST /secrets/[secret_id]?user=[user_id]&token=[token]
+POST /secrets/[secret_id]/?user=[user_id]&token=[token]
 ```
 *params = {"description" : [description]}
 
 #### get secret through secret_id
 ```
-DELETE /secrets/[secret_id]?user=[user_id]&token=[token]
+DELETE /secrets/[secret_id]/?user=[user_id]&token=[token]
 ```
 
 
