@@ -1,13 +1,18 @@
 # SecretAPI
 
-API where you keep your sects
+* API where you keep your sects using django
+* For accounts, you must go through a browser
+* I can validate the data quickly, it is user friendly, and common
+* uses user_id and token authentication to verify if valid user
+* I use that id to grab secrets that belong to the user
+
 
 NOTE**All responses are in ```json```
 
 ## Next steps
-1. More tests with requests
-2. change framework to django rest framework
-3. create more error checks
+1. More tests with requests to make sure no breaks
+2. change framework to django rest framework because it is a lot simpler and cleaner; didn't use because not much documention
+3. create more error checks for user errors
 
 ## Installation
 
