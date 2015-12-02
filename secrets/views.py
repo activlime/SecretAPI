@@ -44,12 +44,12 @@ def detail(request, secret_id):
     try:
         user_id = request.GET['user']
     except:
-        JsonError("key error")
+        return JsonError("key error")
 
     try:
         user = get_object_or_404(User, pk=user_id)
     except ObjectDoesNotExist:
-        JsonError("User " + user_id + "does not exist")
+        return JsonError("User " + user_id + "does not exist")
 
     if request.method == strings.POST:
         description = request.POST['description']
