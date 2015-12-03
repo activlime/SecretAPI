@@ -30,7 +30,7 @@ NOTE**All responses are in ```json```
 5. ```virtual env -p [python 3 path] venv```
 6. ```source venv/bin/activate```
 7. ```pip install django```
-8. ```pip install djang-tokenapi```
+8. ```pip install django-tokenapi```
 8. ```pip install psycopg2```
 9. ```git clone [repo]```
 10. ```sudo apt-get install postgresql```
